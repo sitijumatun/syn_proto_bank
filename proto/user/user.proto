@@ -27,6 +27,7 @@ message LoginRequest {
 message LoginResponse {
   string token = 1;
   string role = 2;
+  string expires_at = 3;
 }
 
 service UserService {
