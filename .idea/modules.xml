@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/syn_proto_bank.iml" filepath="$PROJECT_DIR$/.idea/syn_proto_bank.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../syn_user_service/.idea/syn_user_service.iml" filepath="$PROJECT_DIR$/../syn_user_service/.idea/syn_user_service.iml" />
     </modules>
   </component>
 </project>
