@@ -30,6 +30,8 @@ const (
 	BookService_CreateAuthor_FullMethodName     = "/book.BookService/CreateAuthor"
 	BookService_GetAllAuthors_FullMethodName    = "/book.BookService/GetAllAuthors"
 	BookService_DeleteAuthor_FullMethodName     = "/book.BookService/DeleteAuthor"
+	BookService_BorrowBook_FullMethodName       = "/book.BookService/BorrowBook"
+	BookService_ReturnBook_FullMethodName       = "/book.BookService/ReturnBook"
 )
 
 // BookServiceClient is the client API for BookService service.
@@ -50,6 +52,9 @@ type BookServiceClient interface {
 	CreateAuthor(ctx context.Context, in *CreateAuthorRequest, opts ...grpc.CallOption) (*CreateAuthorResponse, error)
 	GetAllAuthors(ctx context.Context, in *GetAllAuthorsRequest, opts ...grpc.CallOption) (*GetAllAuthorsResponse, error)
 	DeleteAuthor(ctx context.Context, in *DeleteAuthorRequest, opts ...grpc.CallOption) (*DeleteAuthorResponse, error)
+	// Borrow & Return
+	BorrowBook(ctx context.Context, in *BorrowBookRequest, opts ...grpc.CallOption) (*BorrowBookResponse, error)
+	ReturnBook(ctx context.Context, in *ReturnBookRequest, opts ...grpc.CallOption) (*ReturnBookResponse, error)
 }
 
 type bookServiceClient struct {
@@ -170,6 +175,26 @@ func (c *bookServiceClient) DeleteAuthor(ctx context.Context, in *DeleteAuthorRe
 	return out, nil
 }
 
+func (c *bookServiceClient) BorrowBook(ctx context.Context, in *BorrowBookRequest, opts ...grpc.CallOption) (*BorrowBookResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BorrowBookResponse)
+	err := c.cc.Invoke(ctx, BookService_BorrowBook_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *bookServiceClient) ReturnBook(ctx context.Context, in *ReturnBookRequest, opts ...grpc.CallOption) (*ReturnBookResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReturnBookResponse)
+	err := c.cc.Invoke(ctx, BookService_ReturnBook_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BookServiceServer is the server API for BookService service.
 // All implementations must embed UnimplementedBookServiceServer
 // for forward compatibility.
@@ -188,6 +213,9 @@ type BookServiceServer interface {
 	CreateAuthor(context.Context, *CreateAuthorRequest) (*CreateAuthorResponse, error)
 	GetAllAuthors(context.Context, *GetAllAuthorsRequest) (*GetAllAuthorsResponse, error)
 	DeleteAuthor(context.Context, *DeleteAuthorRequest) (*DeleteAuthorResponse, error)
+	// Borrow & Return
+	BorrowBook(context.Context, *BorrowBookRequest) (*BorrowBookResponse, error)
+	ReturnBook(context.Context, *ReturnBookRequest) (*ReturnBookResponse, error)
 	mustEmbedUnimplementedBookServiceServer()
 }
 
@@ -230,6 +258,12 @@ func (UnimplementedBookServiceServer) GetAllAuthors(context.Context, *GetAllAuth
 }
 func (UnimplementedBookServiceServer) DeleteAuthor(context.Context, *DeleteAuthorRequest) (*DeleteAuthorResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteAuthor not implemented")
+}
+func (UnimplementedBookServiceServer) BorrowBook(context.Context, *BorrowBookRequest) (*BorrowBookResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BorrowBook not implemented")
+}
+func (UnimplementedBookServiceServer) ReturnBook(context.Context, *ReturnBookRequest) (*ReturnBookResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReturnBook not implemented")
 }
 func (UnimplementedBookServiceServer) mustEmbedUnimplementedBookServiceServer() {}
 func (UnimplementedBookServiceServer) testEmbeddedByValue()                     {}
@@ -450,6 +484,42 @@ func _BookService_DeleteAuthor_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BookService_BorrowBook_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BorrowBookRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BookServiceServer).BorrowBook(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BookService_BorrowBook_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BookServiceServer).BorrowBook(ctx, req.(*BorrowBookRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BookService_ReturnBook_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReturnBookRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BookServiceServer).ReturnBook(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BookService_ReturnBook_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BookServiceServer).ReturnBook(ctx, req.(*ReturnBookRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BookService_ServiceDesc is the grpc.ServiceDesc for BookService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -500,6 +570,14 @@ var BookService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteAuthor",
 			Handler:    _BookService_DeleteAuthor_Handler,
+		},
+		{
+			MethodName: "BorrowBook",
+			Handler:    _BookService_BorrowBook_Handler,
+		},
+		{
+			MethodName: "ReturnBook",
+			Handler:    _BookService_ReturnBook_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

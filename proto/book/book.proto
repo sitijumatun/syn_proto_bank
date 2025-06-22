@@ -21,6 +21,10 @@ service BookService {
   rpc CreateAuthor(CreateAuthorRequest) returns (CreateAuthorResponse);
   rpc GetAllAuthors(GetAllAuthorsRequest) returns (GetAllAuthorsResponse);
   rpc DeleteAuthor(DeleteAuthorRequest) returns (DeleteAuthorResponse);
+
+  // Borrow & Return
+  rpc BorrowBook(BorrowBookRequest) returns (BorrowBookResponse);
+  rpc ReturnBook(ReturnBookRequest) returns (ReturnBookResponse);
 }
 
 // ===== Book =====
@@ -130,5 +134,22 @@ message DeleteAuthorRequest {
   string id = 1;
 }
 message DeleteAuthorResponse {
+  string message = 1;
+}
+
+message BorrowBookRequest {
+  string book_id = 1;
+}
+
+message BorrowBookResponse {
+  string message = 1;
+}
+
+// Request/Response for returning a book
+message ReturnBookRequest {
+  string book_id = 1;
+}
+
+message ReturnBookResponse {
   string message = 1;
 }
